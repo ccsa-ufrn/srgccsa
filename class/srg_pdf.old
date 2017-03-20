@@ -1,0 +1,274 @@
+<?php
+    /**
+    * SRG PDF Class
+    */
+    class SRGPDF 
+    {
+        public $html;
+        public $category = "0";
+        public $year = "0";
+        public $center_id;
+        public $unity_type = "0";
+        public $unity_id;
+        public $type;
+
+        function __construct()
+        {
+            $this->html = "";
+        }
+
+        public function initByCenter($center_id, $unity_type, $category, $year)
+        {
+            $this->center_id = $center_id;
+            $this->unity_type = $unity_type;
+            $this->category = $category;
+            $this->year = $year;
+            $this->type = "by_center";
+        }
+
+        public function initByUnity($unity_id, $category, $year)
+        {
+            $this->unity_id = $unity_id;
+            $this->category = $category;
+            $this->year = $year;
+            $this->type = "by_unity";
+        }
+
+        public function createHeader()
+        {
+            date_default_timezone_set("America/Fortaleza");
+            $this->html .= '<table width="100%" border=".5">
+                <tr>
+                    <td><center>
+                        <b>RELATÓRIO DE ATIVIDADES</b><br>
+                        Gerado através do Sistema de Relatório de Gestão (www.ccsa.ufrn.br) em '.date('d/m/Y').' às '.date('H:i').'</center><br>';
+            if($this->category != "0") {
+                $this->html .= 'Categoria: '.$this->formatCategory($this->category).'<br>';
+            } else {
+                $this->html .= 'Categoria: Todas<br>';
+            }
+
+            if($this->year != "0") {
+                $this->html .= 'Ano de execução: '.$this->year.'<br>';
+            } else {
+                $this->html .= 'Ano de execução: Todos<br>';
+            }
+            if ($this->type == "by_center") {
+                if($this->unity_type != "0") {
+                    $this->html .= 'Tipo de unidade: '.$this->formatUnityType($this->unity_type).'<br>';
+                } else {
+                    $this->html .= 'Tipo de unidade: Todos<br>';
+                }
+            }
+
+            $this->html .= '</td>
+                <tr>
+            </table>';
+        }
+
+        public function loadActivities($u_id = null) 
+        {
+            // if($this->center_id) {
+            //     $center = R::load('center', $this->center_id);
+            //     $this->html .= '<hr><b>'.$center->name.'</b><hr>';
+            //     $courses_id = R::getCol('select id from course where center_id = ? ', [$this->center_id]);
+            //     $activities = $this->getActivitiesByCoursesIds($courses_id);
+            //     if ($activities) {
+            //         $this->renderActivities($activities);
+            //     } else {
+            //         $this->renderNoActivities();
+            //     }
+            // } else {
+            //     $sample_atv = R::getCol('select unity_name from activity where unity_id = ? limit 1', [$u_id]);
+            //     $this->html .= "<hr><b>".$sample_atv[0]."</b><hr>";
+            //     $sql = 'select * from activity where unity_id = ?';
+            //     $atributes[] = $u_id;
+            //     if($this->category != "0") {
+            //         $sql .= ' and category = ?';
+            //         $atributes[] = $this->category;
+            //     }
+            //     if($this->year != "0") {
+            //     	$sql .= ' and year = ?';
+            //     	$atributes[] = $this->year;
+            //     }
+            //     $sql .= ' and status = ?';
+            //     $atributes[] = "Y";
+            //     $activities = R::getAll($sql, $atributes);
+            //     if (count($activities) > 0) {
+            //         $this->renderActivities($activities);
+            //     } else {
+            //         $this->renderNoActivities();
+            //     }
+            // }
+            switch ($this->type) {
+                case 'by_center':
+                    $center = R::load('center', $this->center_id);
+                    $this->html .= '<hr><b>'.$center->name.'</b><hr>';
+                    $courses_id = R::getCol('select id from course where center_id = ? ', [$this->center_id]);
+                    $activities = $this->getActivitiesByCoursesIds($courses_id);
+
+                    if ($activities) {
+                        $this->renderActivities($activities);
+                    } else {
+                        $this->renderNoActivities();
+                    }
+                    break;
+                case 'by_unity':
+                    $sample_atv = R::getCol('select unity_name from activity where unity_id = ? limit 1', [$this->unity_id]);
+                    if(count($sample_atv) > 0) {
+                        $this->html .= "<hr><b>".$sample_atv[0]."</b><hr>";
+                    }
+                    $sql = 'select * from activity where unity_id = ?';
+                    $atributes[] = $this->unity_id;
+                    if($this->category != "0") {
+                        $sql .= ' and category = ?';
+                        $atributes[] = $this->category;
+                    }
+                    if($this->year != "0") {
+                        $sql .= ' and year = ?';
+                        $atributes[] = $this->year;
+                    }
+                    $sql .= ' and status = ?';
+                    $atributes[] = "Y";
+                    $activities = R::getAll($sql, $atributes);
+                    if (count($activities) > 0) {
+                        $this->renderActivities($activities);
+                    } else {
+                        $this->renderNoActivities();
+                    }
+                    break;
+            }
+        }
+
+        private function getActivitiesByCoursesIds($courses_id)
+        {
+            $activities = null;
+            if(count($courses_id) > 0) {
+                $activities_ids = R::getCol('select activity_id from activity_course where course_id in ('.R::genSlots($courses_id).')', $courses_id);
+                if(count($activities_ids)>0) {
+                    $sql = "select * from activity where id in (".R::genSlots($activities_ids).")";
+                    if($this->category != "0") {
+                        $sql .= " and category = ?";
+                        $activities_ids[] = $this->category;
+                    }
+                    if($this->year != "0") {
+                        $sql .= " and year = ?";
+                        $activities_ids[] = $this->year;
+                    }
+                    $sql .= " and status = ?";
+                    $activities_ids[] = "Y";
+
+                    if($this->unity_type != "0") {
+                        $unities = R::getCol('select u_id from unity where type = ?', [$this->unity_type]);
+                        if (count($unities) > 0) {
+                            $sql .= " and unity_id in (".R::genSlots($unities).")";
+                            foreach ($unities as $tmp_unity) {
+                                $activities_ids[] = $tmp_unity;
+                            }
+                        }
+                    }
+                    $activities = R::getAll($sql, $activities_ids);
+                }
+            }
+            return $activities;
+        }
+
+        private function getCoursesNamesByActivityId($a_id)
+        {
+            $courses_ids = R::getCol('select course_id from activity_course where activity_id = ?', [$a_id]);
+            if(count($courses_ids) > 0) { 
+                $courses_names = R::getCol('select name from course where id in ('.R::genSlots($courses_ids).')', $courses_ids);
+            }
+            return $courses_names;
+        }
+
+        private function renderActivities($activities)
+        {
+            foreach ($activities as $activity) {
+                $this->html .= '<table width="100%" border="0.1">
+                        <tr><td><b>Atividade: '.$activity['title'].'</b></td></tr>
+                        <tr>
+                            <td>
+                                <u>Criada por</u>: '.$activity['unity_name'].'<br>
+                                <u>Categoria</u>: '.$this->formatCategory($activity['category']).'<br>
+                                <u>Ano de execução</u>: '.$activity['year'].'<br>
+                                <u>Objetivos</u>: '.$activity['objective'].'<br>
+                                <u>Metas</u>: '.$activity['goals'].'<br>
+                                <u>Metas Futuras</u>: '.$activity['future_goals'].'<br><u>Cursos</u>: ';
+                $courses = $this->getCoursesNamesByActivityId($activity['id']);
+                for ($i=0; $i < count($courses) ; $i++) { 
+                    $this->html .= $courses[$i];
+                    if ($i == count($courses)-1) {
+                        $this->html .= ".";
+                    } else {
+                        $this->html .= ", ";
+                    }
+                }
+
+                $this->html .= '</td>
+                        </tr>
+                    </table><br>';	
+            }
+        }
+
+        private function renderNoActivities()
+        {
+            $this->html .= '<table width="100%" border=".5">
+            <tr>
+                <th>Nenhuma atividade encontrada</th>
+            </tr>
+            </table>';
+        }
+
+        public function formatCategory($category)
+        {
+            $formatedCategory = null;
+            switch ($category) {
+                case 'gestao':
+                    $formatedCategory = "Gestão";
+                    break;
+                case 'ensino':
+                    $formatedCategory = "Ensino";
+                    break;
+                case 'pesquisa':
+                    $formatedCategory = "Pesquisa";
+                    break;
+                case 'extensao':
+                    $formatedCategory = "Extensão";
+                    break;
+                default:
+                    $formatedCategory = "Indefinido";
+            }
+            return $formatedCategory;
+        }
+
+        public function formatUnityType($type) {
+            $formatedType = null;
+            switch ($type) {
+                case 'admin':
+                    $formatedCategory = "Administrador";
+                    break;
+                case 'departamento':
+                    $formatedCategory = "Departamento";
+                    break;
+                case 'cord-graduacao':
+                    $formatedCategory = "Coordenação de Graduação";
+                    break;
+                case 'cord-pos-graduacao':
+                    $formatedCategory = "Coordenação de Pós-Graduação";
+                    break;
+                case 'unidade-suplementar':
+                    $formatedCategory = "Unidade Suplementar";
+                    break;
+                default:
+                    $formatedCategory = "";
+            }
+            return $formatedCategory;
+        }
+
+        public function getHTML()
+        {
+            return $this->html;
+        }
+    }
+?>

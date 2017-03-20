@@ -1,0 +1,287 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:400,700,900,300);
+
+@mixin background-size ($options) {
+    
+    -webkit-background-size: $options;
+    -moz-background-size: $options;
+    -o-background-size: $options;
+    -ms-background-size: $options;
+    background-size: $options;
+    
+}
+
+@mixin transform ($options) {
+    
+    -webkit-transform: $options;
+    -moz-transform: $options;
+    -o-transform: $options;
+    -ms-transform: $options;
+    transform: $options;
+    
+}
+
+@mixin transition ($options) {
+    
+    -webkit-transition: $options;
+    -moz-transition: $options;
+    -o-transition: $options;
+    -ms-transition: $options;
+    transition: $options;
+    
+}
+
+@mixin vertical-align($position: relative) {
+    position: $position;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+@mixin border-radius($options) {
+    -webkit-border-radius : $options;
+    -moz-border-radius : $options;
+    -ms-border-radius : $options;
+    -o-border-radius : $options;
+    border-radius : $options;
+}
+
+@mixin box-shadow($options) {
+    -webkit-box-shadow : $options;
+    -moz-box-shadow : $options;
+    -ms-box-shadow : $options;
+    -o-box-shadow : $options;
+    box-shadow : $options;
+}
+
+$main-blue-color: #1988cd;
+
+* {
+    
+    font-family: 'Lato', sans-serif;
+    
+}
+
+header {
+    
+    position: fixed;
+    width:100%;
+    
+    nav.menu {
+        
+        position: relative;
+        z-index:20;
+        height: 80px;
+        width:100%;
+        background-color: white;
+        border-bottom: 1px solid #efefef;
+        overflow: hidden;
+        @include box-shadow(0 2px 4px rgba(0,0,0,0.1));
+        @include transition( height 0.3s );
+        
+        a {
+            
+            border-right: 1px solid #efefef;
+            float: left;
+            display: block;
+            margin: 0;
+            height: 80px;
+            font-weight: 900;
+            padding: 32px 40px 0px 40px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: $main-blue-color;
+            cursor: pointer;
+            @include transition( height 0.3s );
+            @include transition( padding 0.3s );
+            
+            div.arrow {
+                
+                position: relative;
+                display: inline-block;
+                margin-left: 5px;
+                top: -3px;
+                
+                div {
+                    
+                    display: inline-block;
+                    margin: 0;
+                    padding: 0;
+                    width: 10px;
+                    height: 1px;
+                    background-color: #d9d9d9; 
+                    margin-top:-5px;
+                    
+                } /* end - div */
+                
+                div.a1 {
+                    
+                    @include transform( rotate(45deg) );
+                    margin-right: -3px;
+                    
+                }
+                
+                div.a2 {
+                    
+                    @include transform( rotate(-45deg) );
+                    margin-left: -3px;
+                    
+                }
+                
+            } /* end - div.arrow */
+            
+        } /* end - a */
+        
+        a.active, a.active:hover {
+            
+            background-color: #efefef;
+            cursor: default;
+            
+        } /* end - a.active */
+        
+        a:hover, a:focus {
+        
+            background-color: #fafbfb;
+            text-decoration: none;
+            
+        } /* end - a:hover, a:focus */
+        
+        a.logo {
+            
+            margin:0;
+            padding:0px 20px;
+            
+            //background-color: #fafbfb;
+            
+            background-color: white;
+            
+            img {
+                
+                height: 60px;
+                margin-top: 10px;
+                @include transition( height 0.3s );
+                @include transition( margin 0.3s );
+                
+            }
+            
+        } /* end - a.logo */
+        
+    } /* end - nav.menu */
+    
+    nav.menu.tiny {
+        
+        height: 40px;
+        @include transition( height 0.3s );
+        
+        a {
+            height: 40px;
+            padding: 10px 40px 0px 40px;
+            
+            @include transition( height 0.3s );
+            @include transition( padding 0.3s );
+                        
+               
+        } /* end - a */
+        
+        a.logo {
+            
+            padding:0px 20px;
+            
+            img {
+                
+                height: 30px;
+                margin-top: 5px;
+                @include transition( height 0.3s );
+                @include transition( margin-top 0.3s );         
+                
+            }
+            
+        } /* end - a.logo */
+        
+    } /* end - nav.menu.tiny */
+    
+    nav.sub-menu {
+        
+        position: relative;
+        z-index: 19;
+        margin-top: -224px;
+        background-color: $main-blue-color;
+        @include box-shadow(0 2px 4px rgba(0,0,0,0.2));
+        height: 220px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        width: 100%;
+        color: white;
+        
+        div.header-container {
+            
+            width: 300px;
+            margin: 20px 20px 20px 0px;
+            border-right: 1px solid white;
+            float: left;
+            
+            img.header {
+                
+                display: block;
+                width: 280px;
+                height: 180px;
+                @include border-radius(10px);
+                
+            }
+            
+        }
+        
+        div.sub-menu-container {
+            
+            width: -moz-calc( 100% - 340px );
+            width: -o-calc( 100% - 340px );
+            width: -ms-calc( 100% - 340px );
+            width: -webkit-calc( 100% - 340px );
+            width: calc( 100% - 340px );
+            
+            margin: 20px 20px 20px 0px;
+            float: left;
+            
+            h1 {
+                
+                text-transform: uppercase;
+                margin: 0px;
+                font-size: 20px;
+                font-weight: 800;
+                margin-bottom: 20px;
+            }
+            
+            a {
+                
+                cursor: pointer;
+                display: inline-block;
+                padding: 20px;
+                color: white;
+                font-size: 16px;
+                text-transform: uppercase;
+                font-weight: 600;
+                text-decoration: none;
+                @include border-radius(10px);
+                
+            }
+            
+            a:hover {
+                
+                background-color:  white;
+                color: black;
+                
+            }
+
+        }
+        
+        
+    } /* end - nav.sub-menu */
+    
+    nav.sub-menu.show {
+        
+        margin-top: 0px;
+        @include transition( margin-top 0.6s );
+        
+    }
+    
+} /* end - header */
