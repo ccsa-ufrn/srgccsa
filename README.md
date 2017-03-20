@@ -2,8 +2,10 @@
 Plugin Wordpress para registro de atividades de gestão acadêmica da UFRN.
 
 ### Como instalar o plugin? ###
+Você pode instalar através do serviço de plugins da wordpress.org, pelo link:
+[https://wordpress.org/plugins/sistema-de-relatorio-de-gestao-ccsa/](https://wordpress.org/plugins/sistema-de-relatorio-de-gestao-ccsa/). Ou instalar manualmente.
 
-Para instalar o SRGCCSA você deve seguir os seguintes passos:
+Para instalar o SRGCCSA manualmente você deve seguir os seguintes passos:
 
 * Copie o diretório **/sgrccsa** para o diretório **/wp-content/plugins/**
 * Altere o arquivo **db_config.php** do diretório **/srgccsa/modules/rb** com as seguintes informações
