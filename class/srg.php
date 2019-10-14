@@ -151,7 +151,7 @@
             switch($action) {
                 case 'send_activity':
                     if($_POST['title']) {
-                        $id = $this->createNewActivity($_POST['title'], $_POST['category'], $_POST['courses'], $_POST['centers'], $_POST['objective'], $_POST['goals'], $_POST['future_goals'], $_POST['year']);
+                        $id = $this->createNewActivity($_POST['title'], $_POST['category'], $_POST['courses'], $_POST['centers'], $_POST['objective'], $_POST['goals'], $_POST['risks'], $_POST['future_goals'], $_POST['year']);
                         if($id > 0) {
                             return ['response'=>'success', 'msg'=>"A atividade foi cadastrada com sucesso"];
                         } else {
@@ -161,7 +161,7 @@
                     break;
                 case 'update_activity':
                     if($_POST['title']) {
-                        $id = $this->updateActivity($_POST['id'], $_POST['title'], $_POST['category'], $_POST['courses'], $_POST['objective'], $_POST['goals'], $_POST['future_goals'], $_POST['year']);
+                        $id = $this->updateActivity($_POST['id'], $_POST['title'], $_POST['category'], $_POST['courses'], $_POST['objective'], $_POST['goals'], $_POST['risks'], $_POST['future_goals'], $_POST['year']);
                         if($id > 0) {
                             return ['response'=>'success', 'msg'=>"A atividade foi atualizada com sucesso"];
                         } else {
@@ -322,10 +322,10 @@
             }
         }
 
-        public function createNewActivity($title, $category, $courses, $centers, $objective, $goals, $future_goals, $year)
+        public function createNewActivity($title, $category, $courses, $centers, $objective, $goals, $risks, $future_goals, $year)
         {
             $activity = new Activity();
-            $id = $activity->createNew($this->unity->id, $this->unity->display_name, $title, $category, $courses, $centers, $objective, $goals, $future_goals, $year);
+            $id = $activity->createNew($this->unity->id, $this->unity->display_name, $title, $category, $courses, $centers, $objective, $goals, $risks, $future_goals, $year);
             if ($id > 0) {
                 $logger = new Logger();
                 $inJson = json_encode([
@@ -336,6 +336,7 @@
                     "centers"=>$centers, 
                     "objective"=>$objective,
                     "goals"=>$goals,
+                    "risks"=>$risks,
                     "future_goals"=>$future_goals,
                     "status"=>"Y",
                     "year"=>$year
@@ -345,7 +346,7 @@
             return $id;
         }
 
-        public function updateActivity($id, $title, $category, $courses, $objective, $goals, $future_goals, $year)
+        public function updateActivity($id, $title, $category, $courses, $objective, $goals, $risks, $future_goals, $year)
         {
             $activity = new Activity($id, $this->unity);
             $before_update = json_encode([
@@ -354,17 +355,19 @@
             	"category"=>$activity->bean->category,
             	"objective"=>$activity->bean->objective,
             	"goals"=>$activity->bean->goals,
+            	"risks"=>$activity->bean->risks,
             	"future_goals"=>$activity->bean->future_goals,
             	"status"=>$activity->bean->status,
             	"year"=>$activity->bean->year
             ]);
-            $id = $activity->update($title, $category, $courses, $objective, $goals, $future_goals, $year);
+            $id = $activity->update($title, $category, $courses, $objective, $goals, $risks, $future_goals, $year);
             $after_update = json_encode([
                 "id"=>$activity->bean->id,
                 "title"=>$activity->bean->title,
                 "category"=>$activity->bean->category,
                 "objective"=>$activity->bean->objective,
                 "goals"=>$activity->bean->goals,
+                "risks"=>$activity->bean->risks,
                 "future_goals"=>$activity->bean->future_goals,
                 "status"=>$activity->bean->status,
                 "year"=>$activity->bean->year
@@ -386,6 +389,7 @@
                 "category"=>$activity->bean->category,
                 "objective"=>$activity->bean->objective,
                 "goals"=>$activity->bean->goals,
+                "risks"=>$activity->bean->risks,
                 "future_goals"=>$activity->bean->future_goals,
                 "status"=>$activity->bean->status,
                 "year"=>$activity->bean->year
@@ -397,6 +401,7 @@
                 "category"=>$activity->bean->category,
                 "objective"=>$activity->bean->objective,
                 "goals"=>$activity->bean->goals,
+                "risks"=>$activity->bean->risks,
                 "future_goals"=>$activity->bean->future_goals,
                 "status"=>$activity->bean->status,
                 "year"=>$activity->bean->year

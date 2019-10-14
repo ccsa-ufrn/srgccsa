@@ -194,6 +194,7 @@
                                 <u>Ano de execução</u>: '.$activity['year'].'<br>
                                 <u>Objetivos</u>: '.$activity['objective'].'<br>
                                 <u>Metas</u>: '.$activity['goals'].'<br>
+                                <u>Riscos</u>: '.$activity['risks'].'<br>
                                 <u>Metas Futuras</u>: '.$activity['future_goals'].'<br><u>Cursos</u>: ';
                 $courses = $this->getCoursesNamesByActivityId($activity['id']);
                 for ($i=0; $i < count($courses) ; $i++) { 

@@ -20,7 +20,7 @@
             }
         }
 
-        public function createNew($u_id, $u_name, $title, $category, $courses, $centers, $objective, $goals, $future_goals, $year)
+        public function createNew($u_id, $u_name, $title, $category, $courses, $centers, $objective, $goals, $risks, $future_goals, $year)
         {
             $this->setUnityId($u_id);
 		    $this->setUnityName($u_name);
@@ -31,6 +31,7 @@
             $this->setCenters($centers);
 		    $this->setObjective($objective);
 		    $this->setGoals($goals);
+		    $this->setRisks($risks);
 		    $this->setFutureGoals($future_goals);
 		    $this->setYear($year);
 		    $this->setStatus("Y");
@@ -42,13 +43,14 @@
             return $id;
         }
 
-        public function update($title, $category, $courses, $objective, $goals, $future_goals, $year)
+        public function update($title, $category, $courses, $objective, $goals, $risks, $future_goals, $year)
         {
             $this->setTitle($title);
             $this->setCategory($category);
             $this->setCourses($courses);
             $this->setObjective($objective);
             $this->setGoals($goals);
+            $this->setRisks($risks);
             $this->setFutureGoals($future_goals);
             $this->setYear($year);
 
@@ -240,6 +242,11 @@
         public function setGoals($goals)
         {
             $this->bean->goals = $goals;
+        }
+
+        public function setRisks($risks)
+        {
+            $this->bean->risks = $risks;
         }
 
         public function setFutureGoals($f_goals)
